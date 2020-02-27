@@ -10,8 +10,8 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
-    std::vector<std::string> prev_cpu{};
-    std::vector<std::string> curr_cpu{};
+    std::vector<std::string> prev_cpu = std::vector<std::string>(10,"0");
+    std::vector<std::string> curr_cpu = std::vector<std::string>(10,"0");
 };
 
 #endif
