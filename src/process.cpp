@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "linux_parser.h"
 
 #include "process.h"
 
@@ -14,7 +15,29 @@ using std::vector;
 int Process::Pid() { return 0; }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() {
+
+    int pid = Pid();
+    long uptime = LinuxParser::UpTime();
+
+    vector<string> proc_cpu_val = LinuxParser::ProcessCpuUtilization(to_string(pid));
+    unsigned long utime = std::stoul (proc_cpu_val[0], nullptr, 0);
+    unsigned long stime = std::stoul (proc_cpu_val[1], nullptr, 0);
+    unsigned long cutime = std::stoul (proc_cpu_val[2], nullptr, 0);
+    unsigned long cstime = std::stoul (proc_cpu_val[3], nullptr, 0);
+    unsigned long starttime = std::stoul (proc_cpu_val[4], nullptr, 0);
+
+    long hertz = sysconf(_SC_CLK_TCK);
+
+    unsigned long total_time = utime + stime + cutime + cstime;
+    unsigned long seconds = uptime - (starttime / hertz);
+
+    float cpu_usage = 100 * ((total_time / (float) hertz) / (float) seconds);
+
+    cpuutil_ = cpu_usage;
+    return cpu_usage;
+    
+}
 
 // TODO: Return the command that generated this process
 string Process::Command() { return string(); }
@@ -30,4 +53,5 @@ long int Process::UpTime() { return 0; }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+bool Process::operator<(Process const& a ) const {
+    return cpuutil_ < a.cpuutil_;}

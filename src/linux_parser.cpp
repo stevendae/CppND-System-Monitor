@@ -52,8 +52,14 @@ string LinuxParser::Kernel() {
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
+
+  // opendir opens a directory stream corresponding to the
+  // directory name, and returns a pointer to the directory stream.
+  // The stream is positioned at the first entry in the directory.
+
   struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
+  while ((file = readdir(directory)) != nullptr) { // reads through every file in directory
+    
     // Is this a directory?
     if (file->d_type == DT_DIR) {
       // Is every character of the name a digit?
@@ -140,6 +146,31 @@ vector<string> LinuxParser::CpuUtilization() {
 
   return cpu_util;
 }
+
+vector<string> LinuxParser::ProcessCpuUtilization(string kProcFolder ) {
+  string line;
+  string value;
+  vector<string> cpu_util;
+  std::ifstream stream(kProcDirectory + kProcFolder + kStatFilename);
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      for (int i = 0; i <= 22; i++){
+        linestream >> value;
+        if (i > 12 and i < 17)
+        {
+          cpu_util.push_back(value);
+        }
+        else if (i == 21){
+          cpu_util.push_back(value);
+        }
+      }
+      return cpu_util;
+    }
+  }
+  return cpu_util;
+}
+
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
