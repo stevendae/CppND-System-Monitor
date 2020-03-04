@@ -20,7 +20,7 @@ Processor& System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 // Ordered based on CpuUtilization
 vector<Process>& System::Processes() { 
-    
+    /*
     vector<int> pids{LinuxParser::Pids()};
 
     // Create a set
@@ -50,9 +50,9 @@ vector<Process>& System::Processes() {
     }
     
     std::sort(processes_.begin(), processes_.end(), std::less<Process>());
-    
+    */
     return processes_; 
-    }
+}
 
 // TODO: Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel(); }
