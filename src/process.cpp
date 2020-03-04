@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "linux_parser.h"
+#include <iostream>
 
 #include "process.h"
 
@@ -12,7 +13,7 @@ using std::to_string;
 using std::vector;
 
 // TODO: Return this process's ID
-int Process::Pid() { return 0; }
+int Process::Pid() { return pid_; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
@@ -21,6 +22,7 @@ float Process::CpuUtilization() {
     long uptime = LinuxParser::UpTime();
 
     vector<string> proc_cpu_val = LinuxParser::ProcessCpuUtilization(to_string(pid));
+
     unsigned long utime = std::stoul (proc_cpu_val[0], nullptr, 0);
     unsigned long stime = std::stoul (proc_cpu_val[1], nullptr, 0);
     unsigned long cutime = std::stoul (proc_cpu_val[2], nullptr, 0);
@@ -33,7 +35,14 @@ float Process::CpuUtilization() {
     unsigned long seconds = uptime - (starttime / hertz);
 
     float cpu_usage = 100 * ((total_time / (float) hertz) / (float) seconds);
-
+    
+    /*std::cout << "process ID " << pid<<std::endl; 
+    for (auto i : proc_cpu_val){
+        std::cout << i << " ";
+    }
+    std::cout << "cpu_usage " << cpu_usage;
+    std::cout << std::endl;
+    */
     cpuutil_ = cpu_usage;
     return cpu_usage;
     
@@ -46,7 +55,7 @@ string Process::Command() { return string(); }
 string Process::Ram() { return string(); }
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+string Process::User() { return LinuxParser::User(pid_); }
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { return 0; }
