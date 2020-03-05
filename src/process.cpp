@@ -17,33 +17,33 @@ int Process::Pid() { return pid_; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
+    
 
     int pid = Pid();
     long uptime = LinuxParser::UpTime();
-
+    
     vector<string> proc_cpu_val = LinuxParser::ProcessCpuUtilization(to_string(pid));
 
-    unsigned long utime = std::stoul (proc_cpu_val[0], nullptr, 0);
-    unsigned long stime = std::stoul (proc_cpu_val[1], nullptr, 0);
-    unsigned long cutime = std::stoul (proc_cpu_val[2], nullptr, 0);
-    unsigned long cstime = std::stoul (proc_cpu_val[3], nullptr, 0);
-    unsigned long starttime = std::stoul (proc_cpu_val[4], nullptr, 0);
+    
+    double utime = std::stod (proc_cpu_val[13]);
+    double stime = std::stod (proc_cpu_val[14]);
+    double cutime = std::stod (proc_cpu_val[15]);
+    double cstime = std::stod (proc_cpu_val[16]);
+    double starttime = std::stod (proc_cpu_val[21]);
 
+    
+    
     long hertz = sysconf(_SC_CLK_TCK);
 
-    unsigned long total_time = utime + stime + cutime + cstime;
-    unsigned long seconds = uptime - (starttime / hertz);
+    double total_time = utime + stime + cutime + cstime;
+    double seconds = uptime - (starttime / hertz);
 
-    float cpu_usage = 100 * ((total_time / (float) hertz) / (float) seconds);
+    float cpu_usage = (total_time / hertz) / seconds;
     
-    /*std::cout << "process ID " << pid<<std::endl; 
-    for (auto i : proc_cpu_val){
-        std::cout << i << " ";
-    }
-    std::cout << "cpu_usage " << cpu_usage;
-    std::cout << std::endl;
-    */
+    
     cpuutil_ = cpu_usage;
+    
+    
     return cpu_usage;
     
 }
@@ -66,5 +66,5 @@ long int Process::UpTime() {
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a ) const {
-    return cpuutil_ < a.cpuutil_;}
+bool Process::operator>(Process const& a ) const {
+    return cpuutil_ > a.cpuutil_;}

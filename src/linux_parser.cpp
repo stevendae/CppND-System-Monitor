@@ -146,7 +146,7 @@ vector<string> LinuxParser::CpuUtilization() {
 
   return cpu_util;
 }
-
+#include <iostream>
 vector<string> LinuxParser::ProcessCpuUtilization(string kProcFolder ) {
   string line;
   string value;
@@ -155,19 +155,14 @@ vector<string> LinuxParser::ProcessCpuUtilization(string kProcFolder ) {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
-      for (int i = 0; i <= 22; i++){
-        linestream >> value;
-        if (i > 12 and i < 17)
-        {
-          cpu_util.push_back(value);
-        }
-        else if (i == 21){
-          cpu_util.push_back(value);
-        }
+      while(!linestream.eof()){
+        if (!(linestream >> value)) {value = "0.0";}
+        cpu_util.push_back(value);
       }
       return cpu_util;
     }
   }
+
   return cpu_util;
 }
 
@@ -308,8 +303,6 @@ string LinuxParser::User(int pid) {
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 
-#include <iostream>
-
 long LinuxParser::UpTime(int pid) {
   string line;
   string temp;
@@ -324,7 +317,6 @@ long LinuxParser::UpTime(int pid) {
         linestream >> temp;
       }
       linestream >> value;
-      std::cout << value;
       return std::stol(value);
     }
   }
