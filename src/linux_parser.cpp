@@ -234,12 +234,12 @@ string LinuxParser::Ram(int pid) {
       while (linestream >> key >> value) {
         if (key == "VmSize:") {
           linestream >> value_unit;
-          /*
-          if (value_unit == "kB") {
-            float mb = std::stof(value)/1000.0;
-            value = mb;
+          
+          if ((value_unit == "kB") && (value != "")) {
+            long mb = std::stol(value)/1000.0;
+            value = std::to_string(mb);
           }
-          */
+          
           return value;
         }
       }
