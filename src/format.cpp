@@ -25,7 +25,24 @@ string Format::ElapsedTime(long total) {
     int h = static_cast<int>(hours);
     int m = static_cast<int>(minutes);
     int s = static_cast<int>(seconds);
-    return string (std::to_string(h)+":"+std::to_string(m)+":"+std::to_string(s));
+
+    string h_, m_, s_;
+    if (h <10) {
+        h_ = "0"+std::to_string(h);
+    }
+    else {h_ = std::to_string(h);}
+
+    if (m <10) {
+        m_ = "0"+std::to_string(m);
+    }
+    else {m_ = std::to_string(m);}
+
+    if (s <10) {
+        s_ = "0"+std::to_string(s);
+    }
+    else {s_ = std::to_string(s);}
+
+    return string (h_+":"+m_+":"+s_);
 
 
 
